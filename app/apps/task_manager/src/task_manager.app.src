@@ -1,0 +1,22 @@
+%%%-------------------------------------------------------------------
+%%% @author strilkov
+%%% @copyright (C) 2024, <COMPANY>
+%%% @doc
+%%%
+%%% @end
+%%% Created : 07. May 2024 02:55
+%%%-------------------------------------------------------------------
+{application, task_manager, [
+  {description, "Task manager application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications, [
+    kernel,
+    stdlib,
+    inets,
+    ssl,
+    sasl
+  ]},
+  {mod, {task_manager_app, []}},
+  {env, []}
+]}.

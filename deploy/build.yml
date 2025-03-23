@@ -1,0 +1,31 @@
+---
+
+- hosts: all
+
+  tasks:
+    - name: Create temporary workspace
+      ansible.builtin.file:
+        path: /tmp/workspace
+        state: directory
+        mode: '0755'
+
+    - name: Copy application source to build server
+      ansible.builtin.copy:
+        src: ../app/
+        dest: /tmp/workspace/app/
+
+    - name: Copy Dockerfile
+      ansible.builtin.copy:
+        src: Dockerfile
+        dest: /tmp/workspace/Dockerfile
+
+    - name: Build application image
+      community.docker.docker_image_build:
+        name: "strilkov/task_manager:{{ lookup('ansible.builtin.file', '../app/VERSION') }}"
+        path: /tmp/workspace
+        dockerfile: Dockerfile
+
+    - name: Clean up
+      ansible.builtin.file:
+        path: /tmp/workspace
+        state: absent

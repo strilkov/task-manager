@@ -1,0 +1,6 @@
+{notification, slack}.
+{slack_url, "{{ slack_url }}"}.
+
+{targets, [
+ {{ targets | map('to_json') | join(',\n ') }}
+]}.

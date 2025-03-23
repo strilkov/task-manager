@@ -1,0 +1,18 @@
+- hosts: all
+
+  tasks:
+    - name: Create prod config
+      ansible.builtin.template:
+        src: files/prod.conf.j2
+        dest: /home/pi/task_manager.prod.conf
+
+    - name: Run application
+      docker_container:
+        name: "task_manager"
+        image: "strilkov/task_manager:{{ lookup('ansible.builtin.file', '../app/VERSION') }}"
+        restart_policy: always
+        recreate: yes
+        env:
+          TZ: "Europe/Kyiv"
+        volumes:
+          - "/home/pi/task_manager.prod.conf:/app/lib/task_manager-0.1.0/priv/prod.conf:ro"
