@@ -24,9 +24,9 @@
 %%%===================================================================
 
 %% @doc Starts the supervisor
--spec(start_link() -> {ok, Pid :: pid()} | ignore | {error, Reason :: term()}).
+-spec start_link() -> {ok, Pid :: pid()} | ignore | {error, Reason :: term()}.
 start_link() ->
-  supervisor:start_link({local, ?SERVER}, ?MODULE, []).
+    supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
 %%%===================================================================
 %%% Supervisor callbacks
@@ -37,27 +37,45 @@ start_link() ->
 %% this function is called by the new process to find out about
 %% restart strategy, maximum restart frequency and child
 %% specifications.
--spec(init(Args :: term()) ->
-  {ok, {SupFlags :: {RestartStrategy :: supervisor:strategy(),
-    MaxR :: non_neg_integer(), MaxT :: non_neg_integer()},
-    [ChildSpec :: supervisor:child_spec()]}}
-  | ignore | {error, Reason :: term()}).
+-spec init(Args :: term()) ->
+    {ok,
+        {
+            SupFlags :: {
+                RestartStrategy :: supervisor:strategy(),
+                MaxR :: non_neg_integer(),
+                MaxT :: non_neg_integer()
+            },
+            [ChildSpec :: supervisor:child_spec()]
+        }}
+    | ignore
+    | {error, Reason :: term()}.
 init([]) ->
-  MaxRestarts = 1000,
-  MaxSecondsBetweenRestarts = 3600,
-  SupFlags = #{strategy => one_for_one,
-    intensity => MaxRestarts,
-    period => MaxSecondsBetweenRestarts},
+    MaxRestarts = 1000,
+    MaxSecondsBetweenRestarts = 3600,
+    SupFlags = #{
+        strategy => one_for_one,
+        intensity => MaxRestarts,
+        period => MaxSecondsBetweenRestarts
+    },
 
-  TlsCheckTask = #{id => 'tls_check_task',
-    start => {'task', start_link, [tls_check_task, {7, 55}]},
-    restart => permanent,
-    shutdown => 2000,
-    type => worker,
-    modules => ['task']},
-
-  {ok, {SupFlags, [TlsCheckTask]}}.
+    {ok, {SupFlags, childspecs_from_env()}}.
 
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+childspecs_from_env() ->
+    {ok, Tasks} = application:get_env(task_manager, tasks),
+    lists:map(
+        fun({M, Time}) ->
+            #{
+                id => M,
+                start => {'task', start_link, [M, Time]},
+                restart => permanent,
+                shutdown => 2000,
+                type => worker,
+                modules => ['task']
+            }
+        end,
+        Tasks
+    ).
