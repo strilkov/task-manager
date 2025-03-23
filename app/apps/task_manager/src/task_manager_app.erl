@@ -31,11 +31,14 @@ set_default_env() ->
   lists:foreach(fun config_entry_handler/1, Data).
 
 set_prod_env() ->
-  Priv = code:priv_dir(task_manager),
-  case file:consult(Priv ++ "/prod.conf") of
-    {ok, Data} -> lists:foreach(fun config_entry_handler/1, Data);
-    {error, _} -> skip
-  end.
+  case os:getenv("PROD_CONF") of
+    false -> skip;
+    Path ->
+      case file:consult(Path) of
+        {ok, Data} -> lists:foreach(fun config_entry_handler/1, Data);
+        {error, _} -> skip
+      end
+    end.
 
 config_entry_handler({K, V}) ->
   application:set_env(task_manager, K, V).
