@@ -22,6 +22,7 @@
     - name: Remove existing image.
       community.docker.docker_image:
         state: absent
+        force_absent: true
         name: "strilkov/task_manager"
         tag: "{{ lookup('ansible.builtin.file', '../app/VERSION') }}"
 
