@@ -19,6 +19,12 @@
         src: Dockerfile
         dest: /tmp/workspace/Dockerfile
 
+    - name: Remove existing image.
+      community.docker.docker_image:
+        state: absent
+        name: "strilkov/task_manager"
+        tag: "{{ lookup('ansible.builtin.file', '../app/VERSION') }}"
+
     - name: Build application image
       community.docker.docker_image_build:
         name: "strilkov/task_manager:{{ lookup('ansible.builtin.file', '../app/VERSION') }}"
