@@ -33,6 +33,9 @@ handle_info(tick, [M, Time, OldTimer]) ->
     Timer = erlang:send_after(erlang:convert_time_unit(24*60*60 , second, millisecond), self(), tick),
     M:do_job(),
     {noreply, [M, Time, Timer]};
+handle_info(now, [M, Time, Timer]) ->
+    M:do_job(),
+    {noreply, [M, Time, Timer]};
 handle_info(_Info, State) ->
     {noreply, State}.
 

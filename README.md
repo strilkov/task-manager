@@ -13,7 +13,7 @@ Prod config overwrites default config.
 - Build: `$ rebar3 compile`
 - Release: `$ rebar3 as prod release`
 - Connect to running node: `$ ./bin/task_manager remote_console`
-- Send tick: `> tls_check_task ! tick.`
+- Do the job immediately: `> tls_check_task ! now.`
 - Dialyzer, build PLT: `$ dialyzer --build_plt --apps erts kernel stdlib crypto sasl inets ssl public_key`
 - Dialyzer, run: `$ dialyzer -r apps/task_manager/ --src`
 
