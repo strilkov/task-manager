@@ -14,6 +14,8 @@ Prod config overwrites default config.
 - Release: `$ rebar3 as prod release`
 - Connect to running node: `$ ./bin/task_manager remote_console`
 - Send tick: `> tls_check_task ! tick.`
+- Dialyzer, build PLT: `$ dialyzer --build_plt --apps erts kernel stdlib crypto sasl inets ssl public_key`
+- Dialyzer, run: `$ dialyzer -r apps/task_manager/ --src`
 
 ## Tasks
 
