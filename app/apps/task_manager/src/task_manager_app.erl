@@ -15,11 +15,8 @@ start(_StartType, _StartArgs) ->
   set_prod_env(),
 
   {ok, NotificationType} = application:get_env(task_manager, notification),
-  {ok, Targets} = application:get_env(task_manager, targets),
   io:format("Priv dir: ~s~n", [code:priv_dir(task_manager)]),
   io:format("Notification type: ~s~n", [NotificationType]),
-  io:format("Targets count: ~w~n", [length(Targets)]),
-
   task_manager_sup:start_link().
 
 stop(_State) ->
