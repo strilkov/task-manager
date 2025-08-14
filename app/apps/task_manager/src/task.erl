@@ -13,6 +13,12 @@
 start_link(M, Time) ->
     gen_server:start_link({local, M}, ?MODULE, [M, Time], []).
 
+init([M, Time = {interval, Interval, sec}]) ->
+    Timer = erlang:send_after(0, self(), tick),
+    io:format("Start module: ~w~n", [M]),
+    io:format("Run every ~w sec~n", [Interval]),
+    {ok, [M, Time, Timer]};
+
 init([M, Time]) ->
     Timer = erlang:send_after(interval_to_first_run(Time), self(), tick),
     io:format("Start module: ~w~n", [M]),
@@ -28,6 +34,12 @@ handle_call(_Request, _From, State) ->
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
+handle_info(tick, [M, Time = {interval, Interval, sec}, OldTimer]) ->
+    erlang:cancel_timer(OldTimer),
+    T = erlang:convert_time_unit(Interval, second, millisecond),
+    Timer = erlang:send_after(T, self(), tick),
+    M:do_job(),
+    {noreply, [M, Time, Timer]};
 handle_info(tick, [M, Time, OldTimer]) ->
     erlang:cancel_timer(OldTimer),
     Timer = erlang:send_after(erlang:convert_time_unit(24*60*60 , second, millisecond), self(), tick),

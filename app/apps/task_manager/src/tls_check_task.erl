@@ -4,7 +4,7 @@
 -export([do_job/0]).
 
 do_job() ->
-    {ok, Targets} = application:get_env(task_manager, targets),
+    {ok, Targets} = application:get_env(task_manager, ?MODULE),
     Res = lists:map(fun error_handler/1, Targets),
     Lines = lists:map(fun to_log_line/1, Res),
     Line = lists:flatten(Lines),
