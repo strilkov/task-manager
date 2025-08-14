@@ -20,3 +20,4 @@ Prod config overwrites default config.
 ## Tasks
 
  - `tls_check_task` - sends a notification when a TLS certificate has expired or is about to expire (in 4 days)
+ - `site_status_check_task` - sends a notification when URL HTTP response status code is not 200
