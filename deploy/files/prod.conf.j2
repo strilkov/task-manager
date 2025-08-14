@@ -1,6 +1,10 @@
 {notification, slack}.
 {slack_url, "{{ slack_url }}"}.
 
-{targets, [
- {{ targets | map('to_json') | join(',\n ') }}
+{tls_check_task, [
+ {{ tls_check_task_targets | map('to_json') | join(',\n ') }}
+]}.
+
+{site_status_check_task, [
+ {{ site_status_check_task_targets | map('to_json') | join(',\n ') }}
 ]}.
